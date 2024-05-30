@@ -15,7 +15,104 @@
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
+<style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+body {
+    background-color: #1d6a8c !important;
+    font-family: "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol", "Noto Color Emoji";
+    border: 5px solid rgba(255, 0, 0, 1); /* Initial border color */
+    width: 100%;
+    height: 100vh;
+    animation: borderAnimation 3s linear infinite; /* Corrected animation name */
+  }
+  
+  @keyframes borderAnimation {
+    0% {
+      border-color: rgba(255, 0, 0, 1); /* Red */
+    }
+    25% {
+      border-color: rgba(0, 255, 0, 1); /* Green */
+    }
+    50% {
+      border-color: rgba(0, 0, 255, 1); /* Blue */
+    }
+    75% {
+      border-color: rgba(255, 255, 0, 1); /* Yellow */
+    }
+    100% {
+      border-color: rgba(255, 0, 0, 1); /* Back to Red */
+    }
+  }
+  
+
+input[type="text"] {
+  color: #fff;
+  outline: none;
+  background: rgba(0, 0, 0, 0.2);
+  max-width: 440px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: 0.24s all ease-in-out;
+}
+
+input[type="text"]:focus {
+  background: rgba(0, 0, 0, 0.2);
+  box-shadow: none;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.container {
+  max-width: 440px;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+.todos li {
+  background: #423a6f;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.delete {
+  cursor: pointer;
+  color: red;
+}
+
+.todos .hide {
+  display: none;
+}
+.todo h1 {
+  font-size: 27px;
+  color: #fff;
+  text-align: center;
+  font-weight: bold;
+}
+.text-light {
+  font-size: 20px;
+  font-weight: bold;
+}
+.todos {
+  max-height: 378px;
+  overflow-y: scroll;
+}
+
+.todos li {
+  margin-bottom: 10px;
+  background-color: #13457c;
+}
+input.search::placeholder {
+  color: #fff !important;
+}
+
+</style>
     
   </head>
   <body>
@@ -54,6 +151,88 @@
         </section>
       </div>
     </main>
-    <script src="script.js"></script>
+    <script>
+        const form = document.querySelector('.add');
+const search = document.querySelector('.search input');
+let list = document.querySelector('.todos');
+
+// Fetch tasks from backend
+const fetchTasks = async () => {
+    const res = await fetch('https://todo-backend-ty8g.onrender.com/tasks');
+    const tasks = await res.json();
+    list.innerHTML = tasks.map(task => createTaskHTML(task)).join('');
+};
+
+// Create task HTML
+const createTaskHTML = (task) => {
+    return `<li class="list-group-item" data-id="${task._id}">
+                
+                <span class="delete material-icons float-right">delete_outline</span>
+                ${task.task}
+                <span class="edit material-icons float-right">edit</span>
+            </li>`;
+};
+
+// Add task to backend
+form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const task = form.task.value.trim();
+    if (task.length) {
+        const res = await fetch('https://todo-backend-ty8g.onrender.com/tasks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ task })
+        });
+        const newTask = await res.json();
+        list.innerHTML += createTaskHTML(newTask);
+    }
+    form.reset();
+});
+
+// Delete task from backend
+list.addEventListener('click', async e => {
+    if (e.target.classList.contains('delete')) {
+        const id = e.target.parentElement.dataset.id;
+        await fetch(`https://todo-backend-ty8g.onrender.com/tasks/${id}`, { method: 'DELETE' });
+        e.target.parentElement.remove();
+    }
+
+    // Edit task
+    if (e.target.classList.contains('edit')) {
+        const taskElement = e.target.parentElement;
+        const id = taskElement.dataset.id;
+        const taskText = taskElement.firstChild.textContent.trim();
+        const newTask = prompt("Edit your task:", taskText);
+        if (newTask) {
+            const res = await fetch(`https://todo-backend-ty8g.onrender.com/tasks/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ task: newTask })
+            });
+            const updatedTask = await res.json();
+            taskElement.innerHTML = `${updatedTask.task}<span class="delete material-icons float-right">delete_outline</span><span class="edit material-icons float-right">edit</span>`;
+        }
+    }
+});
+
+// Filter tasks
+const filterTodos = word => {
+    const tasks = Array.from(list.children);
+    tasks.filter(task => !task.textContent.includes(word))
+        .forEach(task => task.classList.add('hide'));
+    tasks.filter(task => task.textContent.includes(word))
+        .forEach(task => task.classList.remove('hide'));
+};
+
+// Search tasks
+search.addEventListener('keyup', () => {
+    const word = search.value.trim().toLowerCase();
+    filterTodos(word);
+});
+
+// Fetch tasks on load
+document.addEventListener('DOMContentLoaded', fetchTasks);
+
+    </script>
   </body>
 </html>
