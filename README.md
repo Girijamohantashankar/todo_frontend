@@ -2,6 +2,10 @@
 
 A simple and functional Todo application that allows users to manage their daily tasks. This full-stack application is built with HTML, CSS, and JavaScript for the frontend and Node.js, Express, and MongoDB for the backend.
 
+
+## Download APK For Android Link: https://www.mediafire.com/file/3d1elqccd2jnl4u/app-release.zip/file
+
+
 ## Features
 
 - Add, update, and delete tasks.
