@@ -1,0 +1,95 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+    background-color: #1d6a8c !important;
+    font-family: "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol", "Noto Color Emoji";
+    border: 5px solid rgba(255, 0, 0, 1); /* Initial border color */
+    width: 100%;
+    height: 100vh;
+    animation: borderAnimation 3s linear infinite; /* Corrected animation name */
+  }
+  
+  @keyframes borderAnimation {
+    0% {
+      border-color: rgba(255, 0, 0, 1); /* Red */
+    }
+    25% {
+      border-color: rgba(0, 255, 0, 1); /* Green */
+    }
+    50% {
+      border-color: rgba(0, 0, 255, 1); /* Blue */
+    }
+    75% {
+      border-color: rgba(255, 255, 0, 1); /* Yellow */
+    }
+    100% {
+      border-color: rgba(255, 0, 0, 1); /* Back to Red */
+    }
+  }
+  
+
+input[type="text"] {
+  color: #fff;
+  outline: none;
+  background: rgba(0, 0, 0, 0.2);
+  max-width: 440px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: 0.24s all ease-in-out;
+}
+
+input[type="text"]:focus {
+  background: rgba(0, 0, 0, 0.2);
+  box-shadow: none;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.container {
+  max-width: 440px;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+.todos li {
+  background: #423a6f;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.delete {
+  cursor: pointer;
+  color: red;
+}
+
+.todos .hide {
+  display: none;
+}
+.todo h1 {
+  font-size: 27px;
+  color: #fff;
+  text-align: center;
+  font-weight: bold;
+}
+.text-light {
+  font-size: 20px;
+  font-weight: bold;
+}
+.todos {
+  max-height: 378px;
+  overflow-y: scroll;
+}
+
+.todos li {
+  margin-bottom: 10px;
+  background-color: #13457c;
+}
+input.search::placeholder {
+  color: #fff !important;
+}
